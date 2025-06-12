@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>adaammrr - Perfil</title>
+  <style>
+    body {
+      background: #000;
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    img.profile {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid #00ffcc;
+      box-shadow: 0 0 15px #00ffcc;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      text-shadow: 0 0 10px #00ffcc;
+      margin-bottom: 20px;
+    }
+
+    .links {
+      margin-bottom: 40px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #00ffcc;
+      font-size: 1.1rem;
+      margin: 10px 0;
+      text-shadow: 0 0 5px #00ffcc;
+    }
+
+    .link-item::before {
+      content: "▸";
+      color: #00ffcc;
+    }
+
+    .link-item:hover {
+      color: white;
+      text-shadow: 0 0 12px #00ffcc;
+    }
+
+    /* 🎧 Player */
+    .music-player {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 2px solid #00ffcc;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00ffcc99;
+      max-width: 600px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .cover img {
+      width: 80px;
+      border-radius: 6px;
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 10px #00ffcc88;
+    }
+
+    .controls {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .controls .track-info {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px #00ffcc;
+    }
+
+    .controls .buttons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .controls .buttons button {
+      background: none;
+      border: 2px solid #00ffcc;
+      padding: 5px 10px;
+      color: #00ffcc;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 4px;
+      text-shadow: 0 0 5px #00ffcc;
+      transition: 0.2s;
+    }
+
+    .controls .buttons button:hover {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
+    .progress-bar {
+      position: relative;
+      height: 6px;
+      background: #003f3f;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: #00ffcc;
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .time-display {
+      font-size: 0.8rem;
+      margin-top: 5px;
+      color: #00ffcc;
+    }
+
+    audio {
+      display: none;
+    }
+
+    body {
+  opacity: 0;
+  filter: blur(6px);
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+
+body.loaded {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.pulse-avatar {
+  position: relative;
+  z-index: 1;
+}
+
+.pulse-avatar::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,204,0.3) 0%, transparent 70%);
+  box-shadow: 0 0 20px #00ffcc80;
+  z-index: -1;
+  transform: scale(var(--scale, 1));
+  opacity: var(--opacity, 0.6);
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+@keyframes pulseMusic {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.6; }
+}
+
+  </style>
+</head>
+<body>
+  <img src="foto.jpg" alt="Foto de perfil" class="profile pulse-avatar" />
+  <h1>adaammrr</h1>
+
+  <div class="links">
+    <a class="link-item" href="https://instagram.com/aadammrrr" target="_blank">Instagram</a>
+    <a class="link-item" href="https://discord.gg/wh4APwVaZK" target="_blank">Discord</a>
+    <a class="link-item" href="https://github.com/tuusuario" target="_blank">GitHub</a>
+  </div>
+
+  <div class="music-player">
+    <div class="cover">
+      <img src="portada.png" alt="Portada" />
+    </div>
+
+    <div class="controls">
+      <div class="track-info">Juno, Blindheart - Solitude</div>
+      <div class="buttons">
+<button onclick="rewind()">◁◁</button>
+<button onclick="togglePlay()">▷</button>
+<button onclick="forward()">▷▷</button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="time-display" id="current-time">00:00</div>
+    </div>
+    <audio id="audio" src="juno, blindheart - Solitude.mp3" autoplay></audio>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const progress = document.getElementById("progress");
+    const timeDisplay = document.getElementById("current-time");
+    let isPlaying = false;
+
+    function togglePlay() {
+      isPlaying ? audio.pause() : audio.play();
+    }
+
+    function rewind() {
+      audio.currentTime -= 10;
+    }
+
+    function forward() {
+      audio.currentTime += 10;
+    }
+
+    audio.addEventListener("play", () => isPlaying = true);
+    audio.addEventListener("pause", () => isPlaying = false);
+
+    audio.addEventListener("timeupdate", () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = percent + "%";
+      const m = Math.floor(audio.currentTime / 60).toString().padStart(2, "0");
+      const s = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
+      timeDisplay.textContent = `${m}:${s}`;
+    });
+  </script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('loaded');
+  });
+
+  // 🔊 Sincroniza el ritmo de la animación al volumen del audio real
+const avatar = document.querySelector('.pulse-avatar');
+
+if (window.AudioContext) {
+  const audioCtx = new AudioContext();
+  const source = audioCtx.createMediaElementSource(audio);
+  const analyser = audioCtx.createAnalyser();
+
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  analyser.fftSize = 32;
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+  function animatePulse() {
+    requestAnimationFrame(animatePulse);
+    analyser.getByteFrequencyData(dataArray);
+    const avg = dataArray.reduce((a, b) => a + b) / dataArray.length;
+
+    const scale = 1 + avg / 256 * 0.3;
+    const opacity = 0.4 + avg / 512;
+
+    avatar.style.setProperty('--scale', scale);
+    avatar.style.setProperty('--opacity', opacity);
+  }
+
+  // Inicia visualizer después del primer play
+  audio.addEventListener('play', () => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    animatePulse();
+  });
+}
+</script>
+
+</body>
+</html>
