@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>adaammrr@root[]</title>
+  <style>
+    body {
+      background: #000;
+      color: #00ffcc;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #terminal {
+      width: 80%;
+      max-width: 800px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border: 2px solid #00ffcc;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #00ffcc80;
+    }
+
+    .line {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .input-line {
+      display: flex;
+    }
+
+    .prompt {
+      color: #00ffcc;
+      margin-right: 5px;
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      color: #00ffcc;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      flex: 1;
+    }
+
+    .blink {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .transition-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .transition-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal">
+    <div class="line">adaammrr@root[]:~$ Bienvenido, agente.</div>
+    <div class="line">adaammrr@root[]:~$ Hay una clave oculta. Solo el comando correcto revelará el perfil...</div>
+    <div class="line">adaammrr@root[]:~$ Pista: <em>sudo cd adaammrr</em></div>
+    <div class="input-line">
+      <span class="prompt">adaammrr@root[]:~$</span>
+      <input
+        type="text"
+        id="input"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        autofocus
+      />
+    </div>
+  </div>
+
+  <div class="transition-overlay" id="transition"></div>
+
+  <script>
+    const input = document.getElementById('input');
+    const terminal = document.getElementById('terminal');
+    const overlay = document.getElementById('transition');
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const value = input.value.trim();
+        const output = document.createElement('div');
+        output.className = 'line';
+        output.innerHTML = `<span class="prompt">adaammrr@root[]:~$</span> ${value}`;
+        terminal.insertBefore(output, input.parentElement);
+
+        if (value === 'sudo cd adaammrr') {
+          const loading = document.createElement('div');
+          loading.className = 'line';
+          loading.innerHTML = `Accediendo al perfil secreto...`;
+          terminal.insertBefore(loading, input.parentElement);
+
+          // ACTIVA TRANSICIÓN
+          overlay.classList.add('active');
+
+          setTimeout(() => {
+            window.location.href = 'profile.html';
+          }, 800);
+        } else {
+          const errorLine = document.createElement('div');
+          errorLine.className = 'line';
+          errorLine.innerHTML = `Comando no reconocido: ${value}`;
+          terminal.insertBefore(errorLine, input.parentElement);
+        }
+
+        input.value = '';
+      }
+    });
+
+    // Limpia input al recargar
+    window.onbeforeunload = () => {
+      input.value = '';
+    };
+  </script>
+</body>
+</html>
